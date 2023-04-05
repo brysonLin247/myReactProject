@@ -1,43 +1,74 @@
-import React, { lazy, Suspense, useState } from 'react'
-import smallImg from './assets/imgs/5kb.png'
-import bigImg from './assets/imgs/22kb.png'
-import Class from './components/Class'
+import { Layout, Menu } from 'antd';
+import React from 'react'
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './app.less'
-
-// prefetch
-const PreFetchDemo = lazy(() => import(
-  /* webpackChunkName: "PreFetchDemo" */
-  /*webpackPrefetch: true*/
-  '@/components/PreFetchDemo'
-))
-// preload
-const PreloadDemo = lazy(() => import(
-  /* webpackChunkName: "PreloadDemo" */
-  /*webpackPreload: true*/
-  '@/components/PreloadDemo'
- ))
+import HomeLayout from './layout/HomeLayout';
+import { About } from './pages/about';
+import { Contact } from './pages/contact';
+import { Home } from './pages/home';
+const { Header } = Layout;
 
 function App() {
-  const [ show, setShow ] = useState(false)
 
-  const onClickSSSSSSS = () => {
-    setShow(true)
+  // 使用react-router V6来递归处理嵌套路由，生成路由组件
+  const renderRoutes = (routes: any) => {
+    return routes.map((route: any) => (
+      <Route
+        key={route.path}
+        path={route.path}
+        element={route.element}
+      >
+        {route.chilren && renderRoutes(route.chilren)}
+      </Route>
+    ))
   }
+
+  // 配置路由，要求routeList能够初始化默认导航到/home
+
+
+  const routeList = [
+    {
+      key: 'home',
+      label: 'home',
+      path: '/home',
+      element: <Home />
+    },
+    {
+      key: 'about',
+      label: 'about',
+      path: '/about',
+      element: <About />
+    },
+    {
+      key: 'contact',
+      label: 'contact',
+      path: '/contact',
+      element: <Contact />
+    }
+  ]
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const handleMenuClick = ({ key }: { key: string }) => {
+    const { path } = routeList.find(item => item.key === key) || {};
+    if (path) {
+      navigate(path);
+    }
+  };
+
+  if (pathname === '/') return <Navigate to='/home' />
+
   return (
     <>
-      <h2 onClick={onClickSSSSSSS}>展示</h2>
-      <Class />
-      {/* show为true时加载组件 */}
-      { show && (
-        <>
-          <img src={smallImg} alt="小于10kb的图片" />
-          <img src={bigImg} alt="大于于10kb的图片" />
-          <div className='smallImg'></div> {/* 小图片背景容器 */}
-          <div className='bigImg'></div> {/* 大图片背景容器 */}
-          <Suspense fallback={null}><PreloadDemo /></Suspense>
-          <Suspense fallback={null}><PreFetchDemo /></Suspense>
-        </>
-      ) }
+      <Layout style={{ height: '100vh' }}>
+        <Header className="header">
+          <div className="logo" />
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[routeList[0].key]} items={routeList} onClick={handleMenuClick} />
+        </Header>
+        <Routes>
+          {renderRoutes(routeList)}
+        </Routes>
+      </Layout>
     </>
   )
 }

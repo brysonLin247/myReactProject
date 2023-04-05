@@ -14,17 +14,9 @@
     "build:prod": "cross-env NODE_ENV=production BASE_ENV=production webpack -c build/webpack.prod.js",
     "analy": "cross-env NODE_ENV=production BASE_ENV=production webpack -c build/webpack.analy.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/guojiongwei/webpack5-react-ts.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/guojiongwei/webpack5-react-ts/issues"
-  },
-  "homepage": "https://github.com/guojiongwei/webpack5-react-ts#readme",
   "devDependencies": {
     "@babel/core": "^7.18.2",
     "@babel/plugin-proposal-decorators": "^7.18.2",
@@ -64,7 +56,9 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "antd": "^5.4.0",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react-dom": "^18.1.0",
+    "react-router-dom": "6"
   }
 }
